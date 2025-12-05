@@ -32,14 +32,16 @@ const posts = [
 
 export default function BlogFeed() {
   return (
-    <main className="flex-1">
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-2 text-zinc-900 dark:text-zinc-50">Güncel Yazılar</h2>
-        <div className="h-1 w-16 bg-blue-600 rounded" />
+    <main className="flex-1 w-full">
+      <div className="mb-6 sm:mb-8">
+        <h2 className="text-xl sm:text-2xl font-bold mb-2 text-zinc-900 dark:text-zinc-50">Güncel Yazılar</h2>
+        <div className="h-1 w-12 sm:w-16 bg-blue-600 rounded" />
       </div>
-      {posts.map((post, i) => (
-        <BlogCard key={i} {...post} />
-      ))}
+      <div className="flex flex-col gap-4 sm:gap-6">
+        {posts.map((post, i) => (
+          <BlogCard key={i} {...post} />
+        ))}
+      </div>
     </main>
   );
 }
