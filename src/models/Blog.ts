@@ -5,12 +5,14 @@ export interface IBlog extends Document {
   title: string;
   content: string;
   author: string;
+  url: string;
   date: Date;
 }
 
 const BlogSchema = new Schema<IBlog>({
   category: { type: String, required: true },
   title: { type: String, required: true },
+  url: { type: String, required: true, unique: true },
   content: { type: String, required: true },
   author: { type: String, required: true },
   date: { type: Date, required: true },

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Modal from "./Modal";
 import { useRouter } from "next/navigation";
 
-export function LoginModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+export function LoginModal({ isOpen, onClose, user, onLogout }: { isOpen: boolean; onClose: () => void; user?: { name: string; administrator: boolean } | null; onLogout?: () => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -40,10 +40,21 @@ export function LoginModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =
         window.localStorage.setItem("session_name", data.user.name);
         window.localStorage.setItem("session_admin", data.user.administrator ? "1" : "0");
       }
+      // notify other parts of the app about the login
+      window.dispatchEvent(new CustomEvent('session-login'));
       setTimeout(() => {
         onClose();
-        router.refresh();
-      }, 1200);
+        try {
+          const path = typeof window !== 'undefined' ? window.location.pathname : "/";
+          if (path === "/login" || path === "/register") {
+            router.push("/");
+          } else {
+            router.refresh();
+          }
+        } catch (e) {
+          router.push("/");
+        }
+      }, 800);
     }
   }
 
@@ -59,7 +70,7 @@ export function LoginModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =
           placeholder="Email"
           value={email}
           onChange={e => setEmail(e.target.value)}
-          className="px-4 py-2 rounded border border-zinc-300 dark:border-zinc-700 focus:outline-none"
+          className="px-4 py-2 rounded border border-white/20 focus:outline-none"
           required
         />
         <input
@@ -67,7 +78,7 @@ export function LoginModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =
           placeholder="Şifre"
           value={password}
           onChange={e => setPassword(e.target.value)}
-          className="px-4 py-2 rounded border border-zinc-300 dark:border-zinc-700 focus:outline-none"
+          className="px-4 py-2 rounded border border-white/20 focus:outline-none"
           required
         />
         <button type="submit" className="bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 transition">Giriş Yap</button>
@@ -76,6 +87,16 @@ export function LoginModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =
         <div className="text-center text-sm mt-2">
           Hesabınız yok mu? <button type="button" className="text-blue-600 underline" onClick={() => { onClose(); window.dispatchEvent(new CustomEvent('open-register-modal')); }}>Kayıt Ol</button>
         </div>
+        {/* Eğer giriş yapılmışsa çıkış yap butonu göster */}
+        {user && onLogout && (
+          <button
+            type="button"
+            className="mt-2 bg-red-600 text-white py-2 rounded font-semibold hover:bg-red-700 transition"
+            onClick={onLogout}
+          >
+            Çıkış Yap
+          </button>
+        )}
       </form>
     </Modal>
   );
@@ -132,7 +153,7 @@ export function RegisterModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
           placeholder="Ad Soyad"
           value={name}
           onChange={e => setName(e.target.value)}
-          className="px-4 py-2 rounded border border-zinc-300 dark:border-zinc-700 focus:outline-none"
+          className="px-4 py-2 rounded border border-white/20 focus:outline-none"
           required
         />
         <input
@@ -140,7 +161,7 @@ export function RegisterModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
           placeholder="Email"
           value={email}
           onChange={e => setEmail(e.target.value)}
-          className="px-4 py-2 rounded border border-zinc-300 dark:border-zinc-700 focus:outline-none"
+          className="px-4 py-2 rounded border border-white/20 focus:outline-none"
           required
         />
         <input
@@ -148,7 +169,7 @@ export function RegisterModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
           placeholder="Şifre"
           value={password}
           onChange={e => setPassword(e.target.value)}
-          className="px-4 py-2 rounded border border-zinc-300 dark:border-zinc-700 focus:outline-none"
+          className="px-4 py-2 rounded border border-white/20 focus:outline-none"
           required
         />
         <label className="flex items-center gap-2">

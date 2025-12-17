@@ -34,7 +34,7 @@ export default function BlogFeed() {
   return (
     <main className="flex-1 w-full">
       <div className="mb-6 sm:mb-8">
-        <h2 className="text-xl sm:text-2xl font-bold mb-2 text-zinc-900 dark:text-zinc-50">Güncel Yazılar</h2>
+        <h2 className="text-xl sm:text-2xl font-bold mb-2 text-zinc-50">Güncel Yazılar</h2>
         <div className="h-1 w-12 sm:w-16 bg-blue-600 rounded" />
       </div>
       <div className="flex flex-col gap-4 sm:gap-6">
