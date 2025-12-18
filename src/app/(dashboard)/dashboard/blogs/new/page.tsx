@@ -52,7 +52,7 @@ export default function NewBlogPage() {
   }
 
   return (
-    <div className="p-6">
+    <div>
       <h1 className="text-2xl font-bold mb-4">New Blog</h1>
       <form onSubmit={handleSubmit} className="space-y-4 max-w-lg">
         <div>

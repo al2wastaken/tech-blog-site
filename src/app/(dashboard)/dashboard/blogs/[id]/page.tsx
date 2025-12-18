@@ -57,10 +57,10 @@ export default function EditBlogPage() {
     else alert('Failed to save');
   }
 
-  if (loading) return <div className="p-6">Loading...</div>;
+  if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="p-6">
+    <div>
       <h1 className="text-2xl font-bold mb-4">Edit Blog</h1>
       <form onSubmit={handleSave} className="space-y-4 max-w-lg">
         <div>

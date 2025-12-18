@@ -34,8 +34,8 @@ export default function BlogPageClient() {
     return () => { mounted = false; };
   }, [url, router]);
 
-  if (loading) return <div className="p-6">Loading...</div>;
-  if (!blog) return <div className="p-6">Yazı bulunamadı.</div>;
+  if (loading) return <div>Loading...</div>;
+  if (!blog) return <div>Yazı bulunamadı.</div>;
 
   return (
     <div className="prose lg:prose-xl max-w-3xl mx-auto p-6">

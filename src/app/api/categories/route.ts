@@ -29,11 +29,13 @@ export async function POST(req: Request) {
   const body = await req.json();
   const name = body?.name ? String(body.name).trim() : '';
   const slug = body?.slug ? String(body.slug).trim() : '';
+  const color = body?.color ? String(body.color).trim() : '';
   if (!name) return NextResponse.json({ error: 'Name is required' }, { status: 400 });
+  if (!color || !/^#([0-9A-Fa-f]{6})$/.test(color)) return NextResponse.json({ error: 'Valid hex color is required (e.g. #ff0000)' }, { status: 400 });
 
   const baseSlug = slug || name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').slice(0, 120);
   try {
-    const created = await Category.create({ name, slug: baseSlug });
+    const created = await Category.create({ name, slug: baseSlug, color });
     return NextResponse.json(created, { status: 201 });
   } catch (err: any) {
     if (err && err.code === 11000) {

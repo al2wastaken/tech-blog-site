@@ -24,3 +24,11 @@ body {
   color: var(--foreground);
   font-family: Montserrat;
 }
+
+/* Button utilities for dashboard */
+.btn {
+  @apply bg-zinc-800 text-zinc-50 px-3 py-1 rounded-md hover:bg-zinc-700;
+}
+.btn-danger {
+  @apply bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700;
+}

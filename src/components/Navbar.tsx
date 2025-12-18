@@ -76,7 +76,7 @@ export default function Navbar() {
   }, [dropdownOpen]);
 
   return (
-    <header className="bg-zinc-900 shadow-sm sticky top-0 z-50">
+    <header className="bg-zinc-900 border-b border-white/20 sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between py-4 px-6">
         <Link href="/" className="text-2xl font-bold flex items-center gap-2 text-zinc-50">
           <Image src="/logo.png" alt="Logo" width={32} height={32} className="w-8 h-8 object-contain" priority />
@@ -104,10 +104,10 @@ export default function Navbar() {
           <button type="button" onClick={() => setLoginOpen(true)} className="hidden md:inline-block bg-blue-600 text-white px-4 py-2 rounded-full font-semibold hover:bg-blue-700 transition ml-4">Giriş Yap</button>
         ) : (
           <div className="relative hidden md:inline-block ml-4">
-              <button
+            <button
               ref={userBtnRef}
               type="button"
-              className="bg-zinc-800 text-zinc-50 px-4 py-2 rounded-full font-semibold border border-white/20 hover:bg-zinc-800 transition"
+              className="bg-zinc-900 text-zinc-50 px-4 py-2 rounded-full font-semibold border border-white/20 hover:bg-zinc-800 transition"
               tabIndex={0}
               onClick={e => e.preventDefault()}
               onMouseEnter={() => {
@@ -134,11 +134,11 @@ export default function Navbar() {
                 <ul>
                   {user.administrator && (
                     <li>
-                      <button className="w-full text-left px-4 py-2 rounded-2xl hover:border hover:border-white/20 hover:bg-zinc-800 transition" onMouseDown={(e) => { e.preventDefault(); router.push("/dashboard"); }}>Dashboard</button>
+                      <button className="w-full text-left px-4 py-2 rounded-2xl border border-zinc-900 hover:border-white/20 hover:bg-zinc-800 transition" onMouseDown={(e) => { e.preventDefault(); router.push("/dashboard"); }}>Dashboard</button>
                     </li>
                   )}
                   <li>
-                    <button className="w-full text-left px-4 py-2 rounded-2xl hover:border hover:border-white/20 hover:bg-zinc-800 transition" onMouseDown={(e) => { e.preventDefault(); handleLogout(); }}>Çıkış Yap</button>
+                    <button className="w-full text-left px-4 py-2 rounded-2xl border border-zinc-900 hover:border-white/20 hover:bg-zinc-800 transition" onMouseDown={(e) => { e.preventDefault(); handleLogout(); }}>Çıkış Yap</button>
                   </li>
                 </ul>
               </div>

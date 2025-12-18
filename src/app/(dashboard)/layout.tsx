@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-serif bg-zinc-950 text-zinc-50 overflow-x-hidden ${montserrat.variable}`}>
         <GlobalHeader />
-        <main className="max-w-7xl mx-auto px-4 py-8">
+        <main>
           {children}
         </main>
       </body>

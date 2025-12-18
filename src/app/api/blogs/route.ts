@@ -19,13 +19,12 @@ export async function POST(req: NextRequest) {
   const token = req.headers.get("x-session-token") || (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "") || null;
   if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  let payload: unknown;
+  let payload: any;
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (e) {
     return NextResponse.json({ error: "Invalid token" }, { status: 401 });
   }
-
   const user = await User.findById(payload.userId);
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -35,13 +34,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
 
-  const blogData = {
+  const blogData: any = {
     category,
     title,
     content,
     author: user.name,
     date: date ? new Date(date) : new Date(),
-  } as unknown;
+  };
 
   // generate or use provided url (slug)
   const providedUrl = url ? String(url).trim() : '';
@@ -59,7 +58,7 @@ export async function POST(req: NextRequest) {
     try {
       const created = await Blog.create({ ...blogData, url: candidate });
       return NextResponse.json(created, { status: 201 });
-    } catch (err: unknown) {
+    } catch (err: any) {
       if (err && err.code === 11000 && err.keyPattern && err.keyPattern.url) {
         attempt += 1;
         continue;

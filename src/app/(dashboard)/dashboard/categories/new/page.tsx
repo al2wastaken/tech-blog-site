@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 export default function NewCategoryPage() {
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
+  const [color, setColor] = useState('#000000');
   const [saving, setSaving] = useState(false);
   const router = useRouter();
 
@@ -21,7 +22,7 @@ export default function NewCategoryPage() {
     const res = await fetch('/api/categories', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-session-token': token },
-      body: JSON.stringify({ name: name.trim(), slug: slug.trim() || undefined }),
+      body: JSON.stringify({ name: name.trim(), slug: slug.trim() || undefined, color: color }),
     });
     setSaving(false);
     if (res.ok) {
@@ -43,6 +44,13 @@ export default function NewCategoryPage() {
         <div>
           <label className="block text-sm font-medium">Dizin (opsiyonel)</label>
           <input value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="örn: web-gelistirme" className="mt-1 w-full border p-2 rounded" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Renk (hex)</label>
+          <div className="mt-1">
+            <input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="w-12 h-8 p-0 border rounded" />
+            <input value={color} onChange={(e) => setColor(e.target.value)} className="ml-3 mt-1 border p-2 rounded" />
+          </div>
         </div>
         <div>
           <button className="btn" type="submit" disabled={saving}>{saving ? 'Kaydediliyor...' : 'Oluştur'}</button>
