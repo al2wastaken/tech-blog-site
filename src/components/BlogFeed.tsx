@@ -1,36 +1,67 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import BlogCard from "./BlogCard";
 
-const posts = [
-  {
-    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    category: "Yazılım",
-    categoryColor: "bg-blue-600",
-    date: "15 Aralık 2025",
-    author: "Ahmet Yılmaz",
-    title: "React.js ile Modern Web Uygulamaları",
-    description: "Component tabanlı mimari ile web geliştirme süreçlerinizi nasıl hızlandırabileceğinizi öğrenin...",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    category: "Siber Güvenlik",
-    categoryColor: "bg-green-600",
-    date: "1 Aralık 2025",
-    author: "Mert Akın",
-    title: "Şifreleriniz Gerçekten Güvende mi?",
-    description: "İki faktörlü doğrulama (2FA) ve modern şifreleme yöntemlerinin önemi üzerine derinlemesine bir analiz.",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    category: "Donanım",
-    categoryColor: "bg-yellow-600",
-    date: "08 Ekim 2024",
-    author: "Caner Erkin",
-    title: "Geleceğin İş İstasyonları",
-    description: "Ofis masalarımız değişiyor. Ergonomi ve performansın buluştuğu yeni nesil donanımlar.",
-  },
-];
+type RawBlog = {
+  _id?: string;
+  title?: string;
+  date?: string | Date;
+  author?: string;
+  content?: string;
+  image?: string;
+  category?: string | { name?: string; color?: string };
+  categoryId?: string;
+  url?: string;
+};
+
+function formatDate(date?: Date | string) {
+  if (!date) return "";
+  try {
+    return new Date(date).toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" });
+  } catch {
+    return String(date);
+  }
+}
 
 export default function BlogFeed() {
+  const [posts, setPosts] = useState<any[] | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    Promise.all([
+      fetch('/api/categories').then((r) => r.json()).catch(() => []),
+      fetch('/api/blogs').then((r) => r.json()).catch(() => []),
+    ])
+      .then(([cats, blogsData]) => {
+        const catsList = cats || [];
+        const sorted = (blogsData || []).slice().sort((a: any, b: any) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
+        // skip the first (latest shown in hero)
+        const slice = sorted.slice(1); // all except the newest
+        const mapped = slice.map((b: RawBlog) => {
+          let cat: any = null;
+          if (b.category && typeof b.category === 'object') cat = b.category;
+          else if (b.category && typeof b.category === 'string') cat = catsList.find((c: any) => String(c._id) === String(b.category)) || null;
+          else if (b.categoryId) cat = catsList.find((c: any) => String(c._id) === String(b.categoryId)) || null;
+          return {
+            image: b.image || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
+            category: cat?.name || 'Genel',
+            categoryColor: cat?.color || 'bg-blue-600',
+            date: formatDate(b.date),
+            author: b.author || 'Yazar',
+            title: b.title || 'Başlıksız',
+            description: (b.content && String(b.content).slice(0, 180)) || 'Özet yok',
+            url: b.url || b._id || '#',
+          };
+        });
+        if (mounted) setPosts(mapped);
+      })
+      .catch(() => { if (mounted) setPosts([]); });
+    return () => { mounted = false; };
+  }, []);
+
+  if (posts === null) return <div>Loading...</div>;
+
   return (
     <main className="flex-1 w-full">
       <div className="mb-6 sm:mb-8">

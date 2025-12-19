@@ -3,7 +3,6 @@ import { connectDB } from "@/lib/db";
 import Blog from "@/models/Blog";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
-import { Collection } from "mongoose";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev_secret_key";
 
@@ -29,7 +28,7 @@ export async function POST(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
-  const { category, title, content, date, url } = body || {};
+  const { category, title, content, date, url, image } = body || {};
   if (!category || !title || !content) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
@@ -40,6 +39,7 @@ export async function POST(req: NextRequest) {
     content,
     author: user.name,
     date: date ? new Date(date) : new Date(),
+    image: image ? String(image) : undefined,
   };
 
   // generate or use provided url (slug)

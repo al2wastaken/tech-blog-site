@@ -90,15 +90,6 @@ export default function Navbar() {
         >
           <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
         </button>
-        {/* Desktop nav */}
-        <nav className="hidden md:block">
-          <ul className="flex gap-6 text-base">
-            <li><Link href="#" className="text-blue-600 font-bold transition-colors transition-all">Anasayfa</Link></li>
-            <li><Link href="#Güncel-yazilar" className="font-bold hover:text-blue-600 transition-colors transition-all">İncelemeler</Link></li>
-            <li><Link href="#" className="font-bold hover:text-blue-600 transition-colors transition-all">Yazılım</Link></li>
-            <li><Link href="#" className="font-bold hover:text-blue-600 transition-colors transition-all">Hakkımızda</Link></li>
-          </ul>
-        </nav>
         {/* Giriş Yap veya Kullanıcı Bilgisi */}
         {!user ? (
           <button type="button" onClick={() => setLoginOpen(true)} className="hidden md:inline-block bg-blue-600 text-white px-4 py-2 rounded-full font-semibold hover:bg-blue-700 transition ml-4">Giriş Yap</button>
@@ -150,10 +141,6 @@ export default function Navbar() {
       {menuOpen && (
         <nav className="md:hidden bg-zinc-900 shadow-lg">
           <ul className="flex flex-col gap-2 py-4 px-6 text-base">
-            <li><Link href="#" className="text-blue-600 font-bold transition-colors transition-all">Anasayfa</Link></li>
-            <li><Link href="#Güncel-yazilar" className="font-bold hover:text-blue-600 transition-colors transition-all">İncelemeler</Link></li>
-            <li><Link href="#" className="font-bold hover:text-blue-600 transition-colors transition-all">Yazılım</Link></li>
-            <li><Link href="#" className="font-bold hover:text-blue-600 transition-colors transition-all">Hakkımızda</Link></li>
             {!user ? (
               <li><button type="button" onClick={() => setLoginOpen(true)} className="bg-blue-600 text-white px-4 py-2 rounded-full font-semibold hover:bg-blue-700 transition mt-6">Giriş Yap</button></li>
             ) : (

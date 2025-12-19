@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faUser as faUserRegular, faCalendar as faCalendarRegular } from "@fortawesome/free-regular-svg-icons";
 import Link from "next/link";
+import CategoryBadge from "./CategoryBadge";
 
 type BlogCardProps = {
   image: string;
@@ -14,10 +15,16 @@ type BlogCardProps = {
 };
 
 export default function BlogCard({ image, category, categoryColor, date, author, title, description }: BlogCardProps) {
+  const isHex = typeof categoryColor === 'string' && categoryColor.startsWith('#');
+  const badgeStyle = isHex ? { backgroundColor: categoryColor } : undefined;
+  const badgeClass = !isHex ? categoryColor : '';
+
   return (
     <article className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-900 hover:border-white/20 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 flex flex-col sm:flex-row gap-0 sm:gap-6 transition">
       <div className="h-40 sm:h-48 w-full sm:w-64 rounded-lg bg-cover bg-center mb-4 sm:mb-0 relative flex-shrink-0" style={{ backgroundImage: `url('${image}')` }}>
-        <span className={`absolute top-2 left-2 ${categoryColor} text-white px-2 sm:px-3 py-1 rounded-full text-xs font-semibold`}>{category}</span>
+        <div className="absolute top-2 left-2">
+          <CategoryBadge name={category} color={categoryColor} className="text-xs font-semibold" />
+        </div>
       </div>
       <div className="flex-1">
         <div className="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-zinc-500 mb-2">

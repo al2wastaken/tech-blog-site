@@ -1,6 +1,7 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from 'react';
+import CategoryBadge from '@/components/CategoryBadge';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Modal from '@/components/Modal';
@@ -119,19 +120,10 @@ export default function DashboardPage() {
                         cat = b.category;
                       }
                       if (!cat) return null;
-                      // use inline background color for reliability
-                      let textClass = 'text-white';
-                      if (cat.color && /^#([0-9A-Fa-f]{6})$/.test(cat.color)) {
-                        const r = parseInt(cat.color.slice(1, 3), 16);
-                        const g = parseInt(cat.color.slice(3, 5), 16);
-                        const bcol = parseInt(cat.color.slice(5, 7), 16);
-                        const brightness = (r * 299 + g * 587 + bcol * 114) / 1000;
-                        textClass = brightness > 125 ? 'text-black' : 'text-white';
-                      }
                       return (
-                        <span style={{ backgroundColor: cat.color || undefined }} className={`${textClass} text-sm font-medium px-2 py-0.5 rounded`}>
-                          {cat.name}
-                        </span>
+                        <>
+                          <CategoryBadge name={cat.name} color={cat.color} />
+                        </>
                       );
                     })()}
                   </div>

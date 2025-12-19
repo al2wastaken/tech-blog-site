@@ -9,6 +9,8 @@ export default function NewBlogPage() {
   const [category, setCategory] = useState('general');
   const [categories, setCategories] = useState<Array<{ _id?: string; name: string }>>([]);
   const [url, setUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [uploading, setUploading] = useState(false);
   const today = new Date().toISOString().slice(0, 10);
   const [date, setDate] = useState(today);
   const [saving, setSaving] = useState(false);
@@ -44,11 +46,30 @@ export default function NewBlogPage() {
         'Content-Type': 'application/json',
         'x-session-token': token,
       },
-      body: JSON.stringify({ title, content, category, url: url || undefined, author: sessionName, date: new Date(date).toISOString() }),
+      body: JSON.stringify({ title, content, category, url: url || undefined, author: sessionName, date: new Date(date).toISOString(), image: imageUrl || undefined }),
     });
     setSaving(false);
     if (res.ok) router.push('/dashboard/blogs');
     else alert('Failed to create');
+  }
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const token = localStorage.getItem('session_token') || '';
+      const res = await fetch('/api/upload', { method: 'POST', body: fd, headers: token ? { 'x-session-token': token } : undefined as any });
+      if (!res.ok) throw new Error('Upload failed');
+      const data = await res.json();
+      if (data && data.url) setImageUrl(data.url);
+    } catch (err) {
+      alert('Resim yüklenemedi');
+    } finally {
+      setUploading(false);
+    }
   }
 
   return (
@@ -74,6 +95,19 @@ export default function NewBlogPage() {
         <div>
           <label className="block text-sm font-medium">Dizin Yolu (URL slug)</label>
           <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="örn: benim-ilk-yazim" className="mt-1 w-full border p-2 rounded" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Resim (projeye yükle veya URL gir)</label>
+          <input type="file" accept="image/*" onChange={handleFileChange} className="mt-1 w-full" />
+          <div className="mt-2">
+            <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="Opsiyonel: veya resim URL'si girin" className="w-full border p-2 rounded" />
+          </div>
+          {uploading ? <div className="text-sm text-zinc-400 mt-2">Yükleniyor...</div> : null}
+          {imageUrl ? (
+            <div className="mt-2">
+              <img src={imageUrl} alt="preview" className="rounded max-h-48 object-cover" />
+            </div>
+          ) : null}
         </div>
         <div>
           <label className="block text-sm font-medium">Author</label>
