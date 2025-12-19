@@ -51,3 +51,16 @@ export async function PUT(req: NextRequest, context: any) {
   delete out.password;
   return NextResponse.json(out);
 }
+
+export async function DELETE(req: NextRequest, context: any) {
+  const maybeUser = await requireAdmin(req);
+  if ((maybeUser as any)?.status) return maybeUser as any;
+  await connectDB();
+  const maybeParams = context?.params;
+  const params = typeof maybeParams?.then === 'function' ? await maybeParams : maybeParams;
+  const id = params?.id;
+  const existing = await User.findById(id);
+  if (!existing) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  await User.findByIdAndDelete(id);
+  return NextResponse.json({ ok: true });
+}

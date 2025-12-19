@@ -26,7 +26,7 @@ export default function NewCategoryPage() {
     });
     setSaving(false);
     if (res.ok) {
-      router.push('/dashboard');
+      router.push('/dashboard/categories');
     } else {
       const data = await res.json().catch(() => ({}));
       alert(data.error || 'Kayıt sırasında hata oluştu');

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import Modal from '@/components/Modal';
 
 type Cat = { _id: string; name: string; slug?: string; color?: string };
 
@@ -18,15 +19,26 @@ export default function CategoriesAdminPage() {
     fetch('/api/categories').then((r) => r.json()).then((d) => setCats(d || [])).finally(() => setLoading(false));
   }, [router]);
 
-  async function handleDelete(id: string) {
-    if (!confirm('Kategoriyi silmek istediğinize emin misiniz?')) return;
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+
+  function handleDelete(id: string) {
+    setConfirmId(id);
+    setConfirmOpen(true);
+  }
+
+  async function doDelete(id?: string | null) {
+    const delId = id || confirmId;
+    if (!delId) return;
+    setConfirmOpen(false);
     const token = typeof window !== 'undefined' ? localStorage.getItem('session_token') : null;
     if (!token) return router.push('/login');
-    setDeleting(id);
-    const res = await fetch(`/api/categories/${encodeURIComponent(id)}`, { method: 'DELETE', headers: { 'x-session-token': token } });
+    setDeleting(delId);
+    const res = await fetch(`/api/categories/${encodeURIComponent(delId)}`, { method: 'DELETE', headers: { 'x-session-token': token } });
     setDeleting(null);
-    if (res.ok) setCats((p) => p.filter((c) => c._id !== id));
+    if (res.ok) setCats((p) => p.filter((c) => c._id !== delId));
     else { const data = await res.json().catch(()=>({})); alert(data.error || 'Hata'); }
+    setConfirmId(null);
   }
 
   if (loading) return <div>Yükleniyor...</div>;
@@ -54,6 +66,16 @@ export default function CategoriesAdminPage() {
           </li>
         ))}
       </ul>
+      <Modal isOpen={confirmOpen} onClose={() => setConfirmOpen(false)}>
+        <div className="flex flex-col gap-4">
+          <h3 className="text-lg font-semibold">Kategoriyi sil</h3>
+          <p>Kategoriyi silmek istediğinize emin misiniz?</p>
+          <div className="flex justify-end gap-3">
+            <button className="px-4 py-2 rounded bg-zinc-700 hover:bg-zinc-600" onClick={() => setConfirmOpen(false)}>İptal</button>
+            <button className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700" onClick={() => doDelete()} disabled={!!deleting}>{deleting ? 'Siliniyor...' : 'Sil'}</button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

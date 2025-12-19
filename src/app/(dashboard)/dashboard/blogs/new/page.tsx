@@ -25,7 +25,7 @@ export default function NewBlogPage() {
         const data = await res.json();
         setCategories(data || []);
         if ((!category || category === 'general') && data && data.length) {
-          setCategory(data[0].name);
+          setCategory(data[0]._id);
         }
       } catch (e) {
         // ignore
@@ -47,7 +47,7 @@ export default function NewBlogPage() {
       body: JSON.stringify({ title, content, category, url: url || undefined, author: sessionName, date: new Date(date).toISOString() }),
     });
     setSaving(false);
-    if (res.ok) router.push('/dashboard');
+    if (res.ok) router.push('/dashboard/blogs');
     else alert('Failed to create');
   }
 
@@ -62,7 +62,7 @@ export default function NewBlogPage() {
         <div>
           <label className="block text-sm font-medium">Category</label>
           {categories && categories.length > 0 ? (
-            <select value={category} onChange={(e) => setCategory(e.target.value)} className="mt-1 w-full border p-2 rounded">
+            <select value={category} onChange={(e) => setCategory(e.target.value)} className="mt-1 w-full border p-2 rounded bg-zinc-950">
               {categories.map((c) => (
                 <option key={c._id || c.name} value={c.name}>{c.name}</option>
               ))}

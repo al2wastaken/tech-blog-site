@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IBlog extends Document {
-  category: string;
+  categoryId: string;
   title: string;
   content: string;
   author: string;
@@ -10,7 +10,7 @@ export interface IBlog extends Document {
 }
 
 const BlogSchema = new Schema<IBlog>({
-  category: { type: String, required: true },
+  categoryId: { type: String, required: true },
   title: { type: String, required: true },
   url: { type: String, required: true, unique: true },
   content: { type: String, required: true },

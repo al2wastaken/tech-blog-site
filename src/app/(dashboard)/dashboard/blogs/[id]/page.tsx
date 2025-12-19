@@ -31,7 +31,7 @@ export default function EditBlogPage() {
         setCategories(cats || []);
         setTitle(b?.title || '');
         setContent(b?.content || '');
-        setCategory(b?.category || (cats && cats[0]?.name) || '');
+        setCategory(b?.category || (cats && cats[0]?._id) || '');
         setDate(b?.date ? new Date(b.date).toISOString().slice(0, 10) : '');
         setUrl(b?.url || '');
       } catch (e) {
@@ -74,9 +74,9 @@ export default function EditBlogPage() {
         <div>
           <label className="block text-sm font-medium">Category</label>
           {categories && categories.length > 0 ? (
-            <select value={category} onChange={(e) => setCategory(e.target.value)} className="mt-1 w-full border p-2 rounded">
+            <select value={category} onChange={(e) => setCategory(e.target.value)} className="mt-1 w-full border p-2 rounded bg-zinc-950">
               {categories.map((c) => (
-                <option key={c._id || c.name} value={c.name}>{c.name}</option>
+                <option key={c._id || c.name} value={c._id}>{c.name}</option>
               ))}
             </select>
           ) : (
