@@ -23,9 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr">
-      <body className={`font-serif bg-zinc-950 text-zinc-50 overflow-x-hidden ${montserrat.variable}`}>
+      <body className={`min-h-screen flex flex-col font-serif bg-zinc-90 text-zinc-50 overflow-x-hidden ${montserrat.variable}`}>
         <GlobalHeader />
-        {children}
+        <main className="bg-zinc-900">{children}</main>
         <GlobalFooter />
       </body>
     </html>

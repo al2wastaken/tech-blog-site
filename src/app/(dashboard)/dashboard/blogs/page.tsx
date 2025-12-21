@@ -31,11 +31,15 @@ export default function DashboardPage() {
     }
 
     // fetch all categories once, then fetch blogs and merge category info from local categories array
-    Promise.all([fetch('/api/categories').then((r) => r.json()), fetch('/api/blogs').then((r) => r.json())])
-      .then(([cats, blogsData]) => {
+    Promise.all([
+      fetch('/api/categories').then((r) => r.json()).catch(() => []),
+      fetch('/api/blogs?page=1&limit=10').then((r) => r.json()).catch(() => ({ results: [] })),
+    ])
+      .then(([cats, blogsResp]) => {
         const catsList = cats || [];
         setCategories(catsList);
-        const merged = (blogsData || []).map((b: any) => {
+        const list = Array.isArray(blogsResp) ? blogsResp : (blogsResp.results || []);
+        const merged = (list || []).map((b: any) => {
           if (!b) return b;
           // if blog stores category as id (string), look up in catsList
           if (b.category && typeof b.category === 'string') {

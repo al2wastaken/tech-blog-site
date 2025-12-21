@@ -12,18 +12,18 @@ type BlogCardProps = {
   author: string;
   title: string;
   description: string;
+  url: string;
 };
 
-export default function BlogCard({ image, category, categoryColor, date, author, title, description }: BlogCardProps) {
-  const isHex = typeof categoryColor === 'string' && categoryColor.startsWith('#');
-  const badgeStyle = isHex ? { backgroundColor: categoryColor } : undefined;
-  const badgeClass = !isHex ? categoryColor : '';
+export default function BlogCard({ image, category, categoryColor, date, author, title, description, url }: BlogCardProps) {
+
+  const excerpt = String(description).replace(/<[^>]*>/g, '').slice(0, 245) + "...";
 
   return (
-    <article className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-900 hover:border-white/20 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 flex flex-col sm:flex-row gap-0 sm:gap-6 transition">
-      <div className="h-40 sm:h-48 w-full sm:w-64 rounded-lg bg-cover bg-center mb-4 sm:mb-0 relative flex-shrink-0" style={{ backgroundImage: `url('${image}')` }}>
+    <article className="bg-zinc-900 hover:bg-zinc-800 border border-white/20 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 flex flex-col sm:flex-row gap-0 sm:gap-6 transition">
+      <div className="h-40 sm:h-48 w-full sm:w-64 rounded-xl bg-cover bg-center mb-4 sm:mb-0 relative flex-shrink-0" style={{ backgroundImage: `url('${image}')` }}>
         <div className="absolute top-2 left-2">
-          <CategoryBadge name={category} color={categoryColor} className="text-xs font-semibold" />
+          <CategoryBadge name={category} color={categoryColor}/>
         </div>
       </div>
       <div className="flex-1">
@@ -32,8 +32,8 @@ export default function BlogCard({ image, category, categoryColor, date, author,
           <span><FontAwesomeIcon icon={faUserRegular} className="text-xs max-w-[1em] w-auto" /> {author}</span>
         </div>
         <h3 className="text-lg sm:text-xl font-bold mb-2">{title}</h3>
-        <p className="mb-2 text-sm sm:text-base">{description}</p>
-        <Link href="#" className="text-blue-600 font-medium flex items-center gap-1 text-sm sm:text-base">Devamını Oku <FontAwesomeIcon icon={faArrowRight} className="text-xs max-w-[1em] w-auto" /></Link>
+        <p className="mb-2 text-sm sm:text-base">{excerpt}</p>
+        <Link href={`/blogs/${encodeURIComponent(String(url))}`} className="text-blue-600 font-medium flex items-center gap-1 text-sm sm:text-base">Devamını Oku <FontAwesomeIcon icon={faArrowRight} className="text-xs max-w-[1em] w-auto" /></Link>
       </div>
     </article>
   );

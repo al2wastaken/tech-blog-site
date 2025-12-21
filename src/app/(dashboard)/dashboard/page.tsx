@@ -38,11 +38,14 @@ export default function DashboardPage() {
         const blogsData = await blogsRes.json().catch(() => []);
         const catsData = await catsRes.json().catch(() => []);
 
+        // support both old API (array) and new paginated API ({ results, total })
+        const blogsList = Array.isArray(blogsData) ? blogsData : (blogsData.results || []);
+
         const usersRes = await fetch('/api/users', { headers: { 'x-session-token': token } });
         const usersData = usersRes.ok ? await usersRes.json().catch(() => []) : [];
 
-        setBlogs(blogsData || []);
-        setBlogCount(Array.isArray(blogsData) ? blogsData.length : (blogsData?.length ?? 0));
+        setBlogs(blogsList || []);
+        setBlogCount(Array.isArray(blogsData) ? blogsData.length : (blogsData?.total ?? blogsList.length));
         setCategoryCount(Array.isArray(catsData) ? catsData.length : (catsData?.length ?? 0));
         setUserCount(Array.isArray(usersData) ? usersData.length : (usersData?.length ?? 0));
       } finally {
@@ -59,7 +62,7 @@ export default function DashboardPage() {
         <h1 className="text-2xl font-bold">Dashboard</h1>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-4 bg-zinc-900 rounded-lg flex items-center gap-4">
+        <div className="p-4 bg-zinc-900 rounded-xl flex items-center gap-4">
           <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center">
             <FontAwesomeIcon icon={faNewspaper} className="text-white text-lg" />
           </div>
@@ -69,7 +72,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="p-4 bg-zinc-900 rounded-lg flex items-center gap-4">
+        <div className="p-4 bg-zinc-900 rounded-xl flex items-center gap-4">
           <div className="w-12 h-12 rounded-full bg-violet-600 flex items-center justify-center">
             <FontAwesomeIcon icon={faTags} className="text-white text-lg" />
           </div>
@@ -79,7 +82,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="p-4 bg-zinc-900 rounded-lg flex items-center gap-4">
+        <div className="p-4 bg-zinc-900 rounded-xl flex items-center gap-4">
           <div className="w-12 h-12 rounded-full bg-green-600 flex items-center justify-center">
             <FontAwesomeIcon icon={faUsers} className="text-white text-lg" />
           </div>

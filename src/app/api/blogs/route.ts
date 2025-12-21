@@ -6,10 +6,16 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev_secret_key";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   await connectDB();
-  const blogs = await Blog.find().sort({ date: -1 });
-  return NextResponse.json(blogs);
+  const url = new URL(req.url);
+  const page = Math.max(1, parseInt(url.searchParams.get("page") || "1"));
+  const limit = Math.min(50, Math.max(1, parseInt(url.searchParams.get("limit") || "5")));
+  const skip = (page - 1) * limit;
+  const filter: any = {};
+  const total = await Blog.countDocuments(filter);
+  const results = await Blog.find(filter).sort({ date: -1 }).skip(skip).limit(limit).lean();
+  return NextResponse.json({ total, page, limit, results });
 }
 
 export async function POST(req: NextRequest) {
@@ -38,7 +44,7 @@ export async function POST(req: NextRequest) {
     title,
     content,
     author: user.name,
-    date: date ? new Date(date) : new Date(),
+    date: new Date(),
     image: image ? String(image) : undefined,
   };
 

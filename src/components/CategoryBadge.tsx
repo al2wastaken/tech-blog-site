@@ -1,5 +1,3 @@
-import React from 'react';
-
 type Props = {
   name?: string;
   color?: string; // hex (#rrggbb) or Tailwind class like 'bg-blue-600'
@@ -23,7 +21,7 @@ export default function CategoryBadge({ name = '', color, className = '' }: Prop
 
   return (
     <span
-      className={`${textClass} text-sm font-medium px-2 py-0.5 rounded ${colorClass} ${className}`.trim()}
+      className={`${textClass} ${colorClass} ${className} px-3 py-1 rounded-full text-xs sm:text-sm mb-4`.trim()}
       style={style}
     >
       {name}
