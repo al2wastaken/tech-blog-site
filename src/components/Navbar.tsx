@@ -80,7 +80,7 @@ export default function Navbar() {
       <div className="container mx-auto flex items-center justify-between py-4 px-6">
         <Link href="/" className="text-2xl font-bold flex items-center gap-2 text-zinc-50">
           <Image src="/logo.png" alt="Logo" width={32} height={32} className="w-8 h-8 object-contain" priority />
-          <span className="">2<span className="text-blue-600">Bytes</span></span>
+          <span className="">2<span className="text-blue-600">Bits</span></span>
         </Link>
         {/* Hamburger button for mobile */}
         <button

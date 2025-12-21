@@ -12,7 +12,7 @@ const montserrat = Montserrat({
 
 
 export const metadata: Metadata = {
-  title: "2Bytes - Teknoloji Blogu",
+  title: "2Bits - Teknoloji Blogu",
   description: "2 öğrenci tarafından hazırlanan teknoloji blogu.",
 };
 
