@@ -58,6 +58,11 @@ export default function BlogPageClient() {
   return (
     <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 py-12">
       <main className="lg:col-span-2 prose lg:prose-xl max-w-none p-6 bg-transparent">
+        {blog && (blog as any).image ? (
+          <div className="mb-6">
+            <img src={String((blog as any).image)} alt={String(blog.title || '')} className="w-full border border-white/20 rounded-xl max-h-96 object-cover" />
+          </div>
+        ) : null}
         <div className="mb-2">
           <CategoryBadge name={String((blog as any)._categoryName || blog.category || '')} color={(blog as any)._categoryColor} />        
         </div>

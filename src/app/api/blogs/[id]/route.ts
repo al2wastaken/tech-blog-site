@@ -54,6 +54,9 @@ export async function PUT(req: NextRequest, context: any) {
   const params = typeof maybeParams?.then === 'function' ? await maybeParams : maybeParams;
   const idParam = params?.id;
   const body = await req.json();
+  if (body && typeof body === 'object' && Object.prototype.hasOwnProperty.call(body, 'date')) {
+    try { delete (body as any).date; } catch (e) { /* ignore */ }
+  }
   const updateData = { ...body, author: user.name };
   const existing = await findBlogByParam(idParam);
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });

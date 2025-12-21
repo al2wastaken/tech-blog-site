@@ -8,6 +8,28 @@ export default function Sidebar() {
   const [categories, setCategories] = useState<any[]>([]);
   const [recent, setRecent] = useState<any[]>([]);
   const [q, setQ] = useState("");
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  async function loadMore() {
+    if (loadingMore) return;
+    const next = page + 1;
+    setLoadingMore(true);
+    try {
+      const res = await fetch(`/api/blogs?page=${next}&limit=5`);
+      if (res.ok) {
+        const payload = await res.json();
+        setRecent((s) => [...s, ...(payload.results || [])]);
+        setPage(payload.page || next);
+        setTotal(payload.total || 0);
+      }
+    } catch (e) {
+      // ignore
+    } finally {
+      setLoadingMore(false);
+    }
+  }
 
   useEffect(() => {
     let mounted = true;
@@ -19,10 +41,12 @@ export default function Sidebar() {
         // ignore
       }
       try {
-        const b = await fetch(`/api/blogs`);
+        const b = await fetch(`/api/blogs?page=1&limit=5`);
         if (mounted && b.ok) {
-          const all = await b.json();
-          setRecent((all || []).slice(0, 6));
+          const payload = await b.json();
+          setRecent(payload.results || []);
+          setTotal(payload.total || 0);
+          setPage(payload.page || 1);
         }
       } catch (e) {
         // ignore
@@ -63,6 +87,13 @@ export default function Sidebar() {
             </li>
           ))}
         </ul>
+        {recent.length > 0 && recent.length < total && (
+          <div className="mt-4 text-center">
+            <button onClick={loadMore} disabled={loadingMore} className="px-3 py-2 bg-blue-600 text-white rounded font-semibold">
+              {loadingMore ? "Yükleniyor..." : "Daha Fazla Gör"}
+            </button>
+          </div>
+        )}
       </div>
     </aside>
   );

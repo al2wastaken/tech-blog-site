@@ -114,10 +114,6 @@ export default function NewBlogPage() {
           <div className="mt-1 w-full p-2 rounded border bg-zinc-50/5">{sessionName || '—'}</div>
         </div>
         <div>
-          <label className="block text-sm font-medium">Date</label>
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="mt-1 w-full border p-2 rounded" />
-        </div>
-        <div>
           <label className="block text-sm font-medium">Content</label>
           <textarea value={content} onChange={(e) => setContent(e.target.value)} className="mt-1 w-full border p-2 rounded h-48" />
         </div>

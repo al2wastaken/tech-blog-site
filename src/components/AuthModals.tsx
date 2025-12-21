@@ -106,7 +106,6 @@ export function RegisterModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [administrator, setAdministrator] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [show, setShow] = useState(false);
@@ -127,7 +126,7 @@ export function RegisterModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
     const res = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password, administrator }),
+      body: JSON.stringify({ name, email, password }),
     });
     const data = await res.json();
     if (!res.ok) {
@@ -172,10 +171,6 @@ export function RegisterModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
           className="px-4 py-2 rounded border border-white/20 focus:outline-none"
           required
         />
-        <label className="flex items-center gap-2">
-          <input type="checkbox" checked={administrator} onChange={e => setAdministrator(e.target.checked)} />
-          Yönetici olarak kaydol
-        </label>
         <button type="submit" className="bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 transition">Kayıt Ol</button>
         {error && <div className="text-red-600 text-sm text-center">{error}</div>}
         {success && <div className="text-green-600 text-sm text-center">{success}</div>}
