@@ -11,6 +11,7 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "2Bits - Teknoloji Blogu",
   description: "2 öğrenci tarafından hazırlanan teknoloji blogu.",
+  viewport: 'width=device-width, initial-scale=1',
 };
 
 export default function RootLayout({
@@ -20,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr">
-      <body className={`font-serif bg-zinc-900 text-zinc-50 overflow-x-hidden ${montserrat.variable}`}>
+      <body className={`${montserrat.variable} antialiased min-h-screen flex flex-col bg-zinc-900 text-zinc-50 overflow-x-hidden`}> 
         {children}
       </body>
     </html>

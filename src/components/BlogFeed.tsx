@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import BlogCard from "./BlogCard";
+import { BlogCardSkeleton } from "./Skeleton";
 
 type RawBlog = {
   _id?: string;
@@ -106,7 +107,17 @@ export default function BlogFeed() {
 
   const canLoadMore = posts.length < Math.max(0, total - 1); // -1 because we skipped latest
 
-  if (!posts) return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <main className="flex-1 w-full">
+        <div className="flex flex-col gap-4 sm:gap-6">
+          <BlogCardSkeleton />
+          <BlogCardSkeleton />
+          <BlogCardSkeleton />
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="flex-1 w-full">

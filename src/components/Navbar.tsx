@@ -1,9 +1,10 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMicrochip, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faMicrochip, faBars, faTimes, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { LoginModal, RegisterModal } from "./AuthModals";
 import Image from "next/image";
 
@@ -16,6 +17,9 @@ export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const userBtnRef = useRef<HTMLButtonElement>(null);
   const dropdownTimeout = useRef<NodeJS.Timeout | null>(null);
+  const searchParams = useSearchParams();
+  const initialQ = (searchParams && searchParams.get("q")) || "";
+  const [query, setQuery] = useState(initialQ);
 
   // Modal tetikleyicileri arası geçiş için event dinleyicileri
   useEffect(() => {
@@ -31,6 +35,10 @@ export default function Navbar() {
 
 
   useEffect(() => {
+    // sync local query state when URL changes
+    const q = (searchParams && searchParams.get("q")) || "";
+    setQuery(q);
+
     const updateUser = () => {
       const name = window.localStorage.getItem("session_name");
       const admin = window.localStorage.getItem("session_admin");
@@ -64,6 +72,13 @@ export default function Navbar() {
     router.refresh();
   }
 
+  function onSearchSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const q = (query || "").trim();
+    router.push(q ? `/search?q=${encodeURIComponent(q)}` : '/search');
+    setMenuOpen(false);
+  }
+
   // Dropdown dışına tıklanınca kapat
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -77,14 +92,19 @@ export default function Navbar() {
 
   return (
     <header className="bg-zinc-900 border-b border-white/20 sticky top-0 z-50">
-      <div className="container mx-auto flex items-center justify-between py-4 px-6">
-        <Link href="/" className="text-2xl font-bold flex items-center gap-2 text-zinc-50">
+      <div className="container mx-auto flex items-center justify-between py-4 px-4 sm:px-6 md:px-6 lg:px-8">
+        <Link href="/" className="text-2xl font-bold flex items-center gap-2 text-zinc-50 shrink-0">
           <Image src="/logo.png" alt="Logo" width={32} height={32} className="w-8 h-8 object-contain" priority />
-          <span className="">2<span className="text-blue-600">Bits</span></span>
+          <span className="hidden md:flex truncate">2<span className="text-blue-600">Bits</span></span>
         </Link>
+        {/* Desktop search (hidden on small screens) */}
+        <form onSubmit={onSearchSubmit} className="flex items-center flex-1 max-w-xl mx-4">
+          <input value={query} onChange={(e) => setQuery(e.target.value)} name="q" aria-label="Site içinde ara" placeholder="Ara..." className="flex-1 h-10 px-3 rounded-full border border-white/20 bg-zinc-800 text-sm text-white placeholder:text-zinc-400 focus:outline-none" />
+          <button type="submit" className="ml-2 h-10 px-3 bg-blue-600 text-white rounded-full flex items-center justify-center"><FontAwesomeIcon icon={faMagnifyingGlass} /></button>
+        </form>
         {/* Hamburger button for mobile */}
         <button
-          className="md:hidden text-zinc-50 text-2xl ml-auto"
+          className="md:hidden text-zinc-50 text-2xl ml-4"
           onClick={() => setMenuOpen((v) => !v)}
           aria-label="Menüyü Aç/Kapat"
         >
@@ -92,7 +112,7 @@ export default function Navbar() {
         </button>
         {/* Giriş Yap veya Kullanıcı Bilgisi */}
         {!user ? (
-          <button type="button" onClick={() => setLoginOpen(true)} className="hidden md:inline-block bg-blue-600 text-white px-4 py-2 rounded-full font-semibold hover:bg-blue-700 transition ml-4">Giriş Yap</button>
+          <button type="button" onClick={() => setLoginOpen(true)} className="hidden md:inline-flex items-center bg-blue-600 text-white px-3 py-1.5 rounded-full font-semibold hover:bg-blue-700 transition ml-4">Giriş Yap</button>
         ) : (
           <div className="relative hidden md:inline-block ml-4">
             <button
@@ -113,13 +133,12 @@ export default function Navbar() {
             </button>
             {dropdownOpen && (
               <div
-                className="absolute right-0 mt-2 w-40 bg-zinc-900 rounded-2xl shadow-lg border border-white/20 z-50 animate-fade-in"
-                onMouseEnter={() => {
-                  if (dropdownTimeout.current) clearTimeout(dropdownTimeout.current);
-                  setDropdownOpen(true);
-                }}
+                className="absolute right-0 mt-2 w-40 bg-zinc-900 border border-white/20 rounded-2xl shadow-lg z-50"
                 onMouseLeave={() => {
                   dropdownTimeout.current = setTimeout(() => setDropdownOpen(false), 120);
+                }}
+                onMouseEnter={() => {
+                  if (dropdownTimeout.current) clearTimeout(dropdownTimeout.current);
                 }}
               >
                 <ul>

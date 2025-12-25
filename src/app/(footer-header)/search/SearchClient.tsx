@@ -1,11 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import BlogCard from "@/components/BlogCard";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import { BlogCardSkeleton } from '@/components/Skeleton';
 
 export default function SearchClient() {
     const searchParams = useSearchParams();
-    const router = useRouter();
     const q = searchParams.get("q") || "";
     const categoryParam = searchParams.get("category") || "";
     const [query, setQuery] = useState(q);
@@ -73,35 +74,41 @@ export default function SearchClient() {
         setPage(next);
     }
 
-    function onSubmit(e: React.FormEvent) {
-        e.preventDefault();
-        router.push(`/search?q=${encodeURIComponent(query)}`);
-    }
+    // search is performed from navbar (URL `q` param) — no local page form
 
     return (
-        <div className="max-w-4xl mx-auto py-12">
-            <form onSubmit={onSubmit} className="flex gap-2 mb-6">
-                <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Ara..." className="flex-1 h-12 px-4 rounded border border-white/20 bg-zinc-900 text-white" />
-                <button className="h-12 px-4 bg-blue-600 text-white rounded">Ara</button>
-            </form>
+        <div className="max-w-4xl mx-auto py-12 px-4 sm:px-0">
+            <Breadcrumbs items={[
+                { label: 'Ana Sayfa', href: '/' },
+                { label: 'Arama' },
+                ...(categoryParam ? [{ label: `Kategori`, href: `/search?category=${encodeURIComponent(categoryParam)}` }] : []),
+            ]} />
+            
 
             <div className="mb-4 text-sm text-zinc-400">{loading ? "Aranıyor..." : `${total} sonuç`}</div>
 
             <div className="space-y-4">
-                {results.length === 0 && !loading && <div className="text-zinc-400">Sonuç bulunamadı.</div>}
-                {results.map((b: any) => (
-                    <BlogCard
-                        key={b._id}
-                        image={b.image || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80'}     
-                        category={b._categoryName || b.category || "Genel"}
-                        categoryColor={b._categoryColor || "#0ea5e9"}
-                        date={new Date(b.date).toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" })}
-                        author={b.author || "Yazar"}
-                        title={b.title}
-                        description={String(b.content || "").replace(/<[^>]*>/g, "").slice(0, 220)}
-                        url={String(b.url || b._id)}
-                    />
-                ))}
+                {loading ? (
+                    <>
+                        <BlogCardSkeleton />
+                        <BlogCardSkeleton />
+                        <BlogCardSkeleton />
+                    </>
+                ) : (
+                    results.length === 0 ? <div className="text-zinc-400">Sonuç bulunamadı.</div> : results.map((b: any) => (
+                        <BlogCard
+                            key={b._id}
+                            image={b.image || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80'}     
+                            category={b._categoryName || b.category || "Genel"}
+                            categoryColor={b._categoryColor || "#0ea5e9"}
+                            date={new Date(b.date).toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" })}
+                            author={b.author || "Yazar"}
+                            title={b.title}
+                            description={String(b.content || "").replace(/<[^>]*>/g, "").slice(0, 220)}
+                            url={String(b.url || b._id)}
+                        />
+                    ))
+                )}
             </div>
             {results.length < total && (
               <div className="mt-6 flex justify-center">

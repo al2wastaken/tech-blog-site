@@ -16,7 +16,6 @@ export default function useRequireAdmin() {
     fetch('/api/dashboard', { headers: { Authorization: `Bearer ${token}` } })
       .then((r) => {
         if (!r.ok) {
-          // If token invalid or not admin, redirect to home
           router.push('/');
         }
       })

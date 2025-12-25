@@ -1,10 +1,11 @@
 'use client';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faUser as faUserRegular, faCalendar as faCalendarRegular } from "@fortawesome/free-regular-svg-icons";
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import CategoryBadge from '@/components/CategoryBadge';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import { ArticleSkeleton } from '@/components/Skeleton';
 import Sidebar from '@/components/Sidebar';
 
 type Blog = { title: string; category?: string; date?: string; author?: string; content?: string } | null;
@@ -52,12 +53,17 @@ export default function BlogPageClient() {
     return () => { mounted = false; };
   }, [url, router]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <ArticleSkeleton />;
   if (!blog) return <div>Yazı bulunamadı.</div>;
 
   return (
-    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 py-12">
-      <main className="lg:col-span-2 prose lg:prose-xl max-w-none p-6 bg-transparent">
+    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 py-12 px-4 sm:px-6">
+      <main className="lg:col-span-2 prose lg:prose-xl max-w-none bg-transparent">
+        <Breadcrumbs items={[
+          { label: 'Ana Sayfa', href: '/' },
+          { label: (blog && (blog as any)._categoryName) || (blog && blog.category) || 'Kategoriler', href: blog && (blog as any).category ? `/search?category=${encodeURIComponent(String((blog as any).category))}` : undefined },
+          { label: String(blog.title || '' ) }
+        ]} />
         {blog && (blog as any).image ? (
           <div className="mb-6">
             <img src={String((blog as any).image)} alt={String(blog.title || '')} className="w-full border border-white/20 rounded-xl max-h-96 object-cover" />

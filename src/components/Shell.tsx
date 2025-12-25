@@ -15,7 +15,9 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Navbar />
-      {children}
+      <main className="flex-1">
+        {children}
+      </main>
       <Footer />
     </>
   );

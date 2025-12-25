@@ -22,12 +22,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr">
-      <body className={`min-h-screen flex flex-col font-serif bg-zinc-90 text-zinc-50 overflow-x-hidden ${montserrat.variable}`}>
-        <GlobalHeader />
-        <main className="bg-zinc-900">{children}</main>
-        <GlobalFooter />
-      </body>
-    </html>
+    <>
+      <GlobalHeader />
+      <main className="flex-1 bg-zinc-900">{children}</main>
+      <GlobalFooter />
+    </>
   );
 }
