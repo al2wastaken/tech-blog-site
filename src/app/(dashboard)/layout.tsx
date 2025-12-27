@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "../globals.css";
+import React from "react";
 
 import GlobalHeader from "../../components/GlobalHeader";
 
@@ -23,7 +24,9 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <GlobalHeader />
+      <React.Suspense fallback={null}>
+        <GlobalHeader />
+      </React.Suspense>
       <main className="flex-1">
         {children}
       </main>

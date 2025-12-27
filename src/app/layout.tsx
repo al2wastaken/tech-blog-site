@@ -11,7 +11,11 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "2Bits - Teknoloji Blogu",
   description: "2 öğrenci tarafından hazırlanan teknoloji blogu.",
-  viewport: 'width=device-width, initial-scale=1',
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({
